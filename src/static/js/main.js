@@ -70,6 +70,7 @@ function toggleConfigPanel() {
 	configContainer.classList.toggle("active");
 	configToggle.classList.toggle("active");
 	configOverlay.classList.toggle("active");
+	document.body.classList.toggle("config-open");
 }
 
 configToggle.addEventListener("click", toggleConfigPanel);
