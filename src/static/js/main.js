@@ -5,7 +5,8 @@ import { CONFIG } from "./config/config.js";
 import { Logger } from "./utils/logger.js";
 import { VideoManager } from "./video/video-manager.js";
 import { ScreenRecorder } from "./video/screen-recorder.js";
-import { i18n } from "./i18n.js";
+
+const { i18n } = window;
 
 /**
  * @fileoverview Main entry point for the application.
@@ -119,20 +120,32 @@ function updateLanguage(lang) {
 
 	// Update document title
 	document.title = i18n[lang].title;
+
+	// Update connect button text if connected
+	if (isConnected) {
+		connectButton.textContent = i18n[currentLanguage].disconnect;
+	} else {
+		connectButton.textContent = i18n[currentLanguage].connect;
+	}
 }
 
 // Initialize language
 document.addEventListener("DOMContentLoaded", () => {
-	const languageSelect = document.getElementById("language-select");
-	languageSelect.value = currentLanguage;
-	updateLanguage(currentLanguage);
+	// 确保 i18n 已加载
+	if (window.i18n) {
+		const languageSelect = document.getElementById("language-select");
+		if (languageSelect) {
+			languageSelect.value = currentLanguage;
+			updateLanguage(currentLanguage);
 
-	// Add language change listener
-	languageSelect.addEventListener("change", (e) => {
-		updateLanguage(e.target.value);
-	});
-
-	// ... rest of your existing initialization code ...
+			// Add language change listener
+			languageSelect.addEventListener("change", (e) => {
+				updateLanguage(e.target.value);
+			});
+		}
+	} else {
+		console.error("i18n not loaded");
+	}
 });
 
 /**

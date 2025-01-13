@@ -1,8 +1,9 @@
-export const i18n = {
+const i18n = {
     en: {
         title: 'Gemini 2.0 Flash Multimodal Live API Client',
         apiKeyPlaceholder: 'Please Input Gemini API Key',
         settings: 'Settings',
+        language: 'Language',
         sound: 'Sound',
         responseType: 'Response Type',
         videoFps: 'Video FPS',
@@ -26,6 +27,7 @@ export const i18n = {
         title: 'Gemini 2.0 多模态实时 API 客户端',
         apiKeyPlaceholder: '请输入 Gemini API 密钥',
         settings: '设置',
+        language: '语言',
         sound: '声音',
         responseType: '响应类型',
         videoFps: '视频帧率',
@@ -45,4 +47,6 @@ export const i18n = {
         connectionClosed: '已断开服务器连接',
         pleaseInputApiKey: '请输入 API 密钥'
     }
-}; 
+};
+
+export default i18n; 

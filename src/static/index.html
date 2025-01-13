@@ -22,15 +22,18 @@
 		<div class="header">
 			<div class="settings">
 				<input type="password" id="api-key" data-i18n-placeholder="apiKeyPlaceholder" />
-				<select id="language-select" class="language-select">
-					<option value="zh">中文</option>
-					<option value="en">English</option>
-				</select>
 				<div class="config-wrapper">
 					<button id="config-toggle" class="icon-button">
 						<span class="material-symbols-outlined">settings</span>
 					</button>
 					<div id="config-container" class="config-panel hidden-mobile">
+						<div class="setting-container">
+							<span class="setting-label" data-i18n="language">Language: </span>
+							<select id="language-select" class="styled-select">
+								<option value="zh">中文</option>
+								<option value="en">English</option>
+							</select>
+						</div>
 						<div class="setting-container">
 							<span class="setting-label" data-i18n="sound">Sound: </span>
 							<select id="voice-select" class="styled-select">
@@ -110,7 +113,28 @@
 			</div>
 		</div>
 	</div>
-	<script src="js/i18n.js" type="module"></script>
+	<script type="module">
+		import i18n from './js/i18n.js';
+		window.i18n = i18n;
+		// 初始化语言
+		const currentLanguage = localStorage.getItem("language") || "zh";
+		const updateLanguage = (lang) => {
+			document.querySelectorAll("[data-i18n]").forEach((element) => {
+				const key = element.getAttribute("data-i18n");
+				if (i18n[lang][key]) {
+					element.textContent = i18n[lang][key];
+				}
+			});
+			document.querySelectorAll("[data-i18n-placeholder]").forEach((element) => {
+				const key = element.getAttribute("data-i18n-placeholder");
+				if (i18n[lang][key]) {
+					element.placeholder = i18n[lang][key];
+				}
+			});
+			document.title = i18n[lang].title;
+		};
+		updateLanguage(currentLanguage);
+	</script>
 	<script src="js/main.js" type="module"></script>
 </body>
 
