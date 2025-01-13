@@ -63,15 +63,20 @@ if (savedResponseType) {
 }
 
 // Handle configuration panel toggle
-configToggle.addEventListener("click", () => {
+const configOverlay = document.getElementById("config-overlay");
+
+function toggleConfigPanel() {
 	configContainer.classList.toggle("active");
 	configToggle.classList.toggle("active");
-});
+	configOverlay.classList.toggle("active");
+}
+
+configToggle.addEventListener("click", toggleConfigPanel);
+configOverlay.addEventListener("click", toggleConfigPanel);
 
 applyConfigButton.addEventListener("click", () => {
 	localStorage.setItem("response_type", responseTypeSelect.value);
-	configContainer.classList.toggle("active");
-	configToggle.classList.toggle("active");
+	toggleConfigPanel();
 });
 
 // State variables

@@ -66,10 +66,6 @@ body {
 	padding: var(--spacing-md) var(--spacing-lg);
 	border-radius: var(--radius-lg);
 	box-shadow: var(--shadow-md);
-	position: sticky;
-	top: var(--spacing-md);
-	z-index: 100;
-	backdrop-filter: blur(8px);
 	border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -79,6 +75,7 @@ body {
 	gap: var(--spacing-md);
 	flex-wrap: wrap;
 	width: 100%;
+	position: relative;
 }
 
 #api-key {
@@ -190,7 +187,7 @@ body {
 
 #config-toggle {
 	position: relative;
-	z-index: 101;
+	z-index: 100;
 }
 
 #config-toggle.active {
@@ -201,13 +198,30 @@ body {
 
 .config-panel {
 	display: none;
+	position: absolute;
+	top: calc(100% + 8px);
+	right: 0;
 	background-color: var(--surface-color);
 	border-radius: var(--radius-lg);
 	padding: var(--spacing-lg);
-	margin-bottom: var(--spacing-lg);
-	box-shadow: var(--shadow-lg);
+	box-shadow: var(--shadow-xl);
 	border: 1px solid var(--border-color);
 	animation: slideDown 0.3s ease-out;
+	min-width: 300px;
+	z-index: 100;
+}
+
+.config-panel::before {
+	content: '';
+	position: absolute;
+	top: -8px;
+	right: 16px;
+	width: 16px;
+	height: 16px;
+	background-color: var(--surface-color);
+	border-left: 1px solid var(--border-color);
+	border-top: 1px solid var(--border-color);
+	transform: rotate(45deg);
 }
 
 .config-panel.active {
@@ -513,6 +527,34 @@ body {
 	.visualizer-container {
 		padding: var(--spacing-md);
 	}
+
+	.config-panel {
+		position: fixed;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		width: 90%;
+		max-width: 400px;
+		max-height: 90vh;
+		overflow-y: auto;
+		margin: 0;
+		animation: fadeIn 0.3s ease-out;
+	}
+
+	.config-panel::before {
+		display: none;
+	}
+
+	@keyframes fadeIn {
+		from {
+			opacity: 0;
+			transform: translate(-50%, -45%);
+		}
+		to {
+			opacity: 1;
+			transform: translate(-50%, -50%);
+		}
+	}
 }
 
 #apply-config {
@@ -530,4 +572,83 @@ body {
 #apply-config:active {
 	transform: translateY(0);
 	box-shadow: var(--shadow-sm);
+}
+
+.config-overlay {
+	display: none;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0, 0, 0, 0.5);
+	backdrop-filter: blur(2px);
+	z-index: 99;
+	animation: fadeIn 0.3s ease-out;
+}
+
+.config-overlay.active {
+	display: block;
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+.config-wrapper {
+	position: relative;
+}
+
+#config-toggle {
+	position: relative;
+	z-index: 100;
+}
+
+#config-toggle.active {
+	background-color: var(--primary-color);
+	color: white;
+	transform: rotate(180deg);
+}
+
+.config-panel {
+	display: none;
+	position: absolute;
+	top: calc(100% + 8px);
+	right: 0;
+	background-color: var(--surface-color);
+	border-radius: var(--radius-lg);
+	padding: var(--spacing-lg);
+	box-shadow: var(--shadow-xl);
+	border: 1px solid var(--border-color);
+	animation: slideDown 0.3s ease-out;
+	min-width: 300px;
+	z-index: 100;
+}
+
+.config-panel::before {
+	content: '';
+	position: absolute;
+	top: -8px;
+	right: 16px;
+	width: 16px;
+	height: 16px;
+	background-color: var(--surface-color);
+	border-left: 1px solid var(--border-color);
+	border-top: 1px solid var(--border-color);
+	transform: rotate(45deg);
+}
+
+.config-panel.active {
+	display: block;
+}
+
+@media (max-width: 768px) {
+	.config-wrapper {
+		position: static;
+	}
 }
