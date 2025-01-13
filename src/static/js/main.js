@@ -174,10 +174,24 @@ function logMessage(message, type = "system") {
 	}
 
 	if (type === "ai" && currentAiMessageElement) {
-		// 如果是AI消息且存在当前消息元素，则追加到现有内容
 		const messageText = currentAiMessageElement.querySelector(".message-text");
-		messageText.textContent += message;
-		logsContainer.scrollTop = logsContainer.scrollHeight;
+		// 使用打字机效果显示消息
+		const typewriterEffect = async (text, element) => {
+			const words = text.split('');
+			for (let char of words) {
+				await new Promise(resolve => setTimeout(resolve, 20)); // 控制打字速度
+				element.innerHTML += char;
+				// 自动滚动到底部
+				logsContainer.scrollTop = logsContainer.scrollHeight;
+			}
+		};
+		
+		// 如果消息包含markdown，可以使用marked库来渲染
+		if (window.marked) {
+			message = marked.parse(message);
+		}
+		
+		typewriterEffect(message, messageText);
 		return;
 	}
 
