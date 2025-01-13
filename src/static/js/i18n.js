@@ -10,13 +10,17 @@ export const i18n = {
         systemInstructionPlaceholder: 'Enter custom system instructions...',
         confirm: 'Confirm',
         connect: 'Connect',
+        disconnect: 'Disconnect',
         messagePlaceholder: 'Enter message...',
         send: 'Send',
         inputAudio: 'Input Audio',
         outputAudio: 'Output Audio',
         stopVideo: 'Stop Video',
         text: 'Text',
-        audio: 'Audio'
+        audio: 'Audio',
+        connectionSuccess: 'Connected to Gemini 2.0 Flash Multimodal Live API',
+        connectionClosed: 'Disconnected from server',
+        pleaseInputApiKey: 'Please input API Key'
     },
     zh: {
         title: 'Gemini 2.0 多模态实时 API 客户端',
@@ -29,12 +33,16 @@ export const i18n = {
         systemInstructionPlaceholder: '输入自定义系统指令...',
         confirm: '确认',
         connect: '连接',
+        disconnect: '断开连接',
         messagePlaceholder: '输入消息...',
         send: '发送',
         inputAudio: '输入音频',
         outputAudio: '输出音频',
         stopVideo: '停止视频',
         text: '文本',
-        audio: '音频'
+        audio: '音频',
+        connectionSuccess: '已连接到 Gemini 2.0 Flash 多模态实时 API',
+        connectionClosed: '已断开服务器连接',
+        pleaseInputApiKey: '请输入 API 密钥'
     }
 }; 

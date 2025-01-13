@@ -1,11 +1,11 @@
-import {MultimodalLiveClient} from "./core/websocket-client.js";
-import {AudioStreamer} from "./audio/audio-streamer.js";
-import {AudioRecorder} from "./audio/audio-recorder.js";
-import {CONFIG} from "./config/config.js";
-import {Logger} from "./utils/logger.js";
-import {VideoManager} from "./video/video-manager.js";
-import {ScreenRecorder} from "./video/screen-recorder.js";
-import {i18n} from "./i18n.js";
+import { MultimodalLiveClient } from "./core/websocket-client.js";
+import { AudioStreamer } from "./audio/audio-streamer.js";
+import { AudioRecorder } from "./audio/audio-recorder.js";
+import { CONFIG } from "./config/config.js";
+import { Logger } from "./utils/logger.js";
+import { VideoManager } from "./video/video-manager.js";
+import { ScreenRecorder } from "./video/screen-recorder.js";
+import { i18n } from "./i18n.js";
 
 /**
  * @fileoverview Main entry point for the application.
@@ -85,6 +85,7 @@ let videoManager = null;
 let isScreenSharing = false;
 let screenRecorder = null;
 let isUsingTool = false;
+let currentAiMessageElement = null;
 
 // Multimodal Client
 const client = new MultimodalLiveClient();
@@ -135,6 +136,19 @@ document.addEventListener("DOMContentLoaded", () => {
  * @param {string} [type='system'] - The type of the message (system, user, ai).
  */
 function logMessage(message, type = "system") {
+	if (type === "user") {
+		// 用户发送新消息时，清除当前AI消息元素的引用
+		currentAiMessageElement = null;
+	}
+
+	if (type === "ai" && currentAiMessageElement) {
+		// 如果是AI消息且存在当前消息元素，则追加到现有内容
+		const messageText = currentAiMessageElement.querySelector(".message-text");
+		messageText.textContent += message;
+		logsContainer.scrollTop = logsContainer.scrollHeight;
+		return;
+	}
+
 	const logEntry = document.createElement("div");
 	logEntry.classList.add("log-entry", type);
 
@@ -159,12 +173,17 @@ function logMessage(message, type = "system") {
 	logEntry.appendChild(emoji);
 
 	const messageText = document.createElement("span");
+	messageText.classList.add("message-text");
 	messageText.textContent = message;
 	logEntry.appendChild(messageText);
 
 	if (type !== "system") {
 		logsContainer.appendChild(logEntry);
 		logsContainer.scrollTop = logsContainer.scrollHeight;
+
+		if (type === "ai") {
+			currentAiMessageElement = logEntry;
+		}
 	}
 }
 
@@ -257,7 +276,7 @@ async function handleMicToggle() {
 				updateAudioVisualizer(inputVolume, true);
 			});
 
-			const stream = await navigator.mediaDevices.getUserMedia({audio: true});
+			const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 			const source = audioCtx.createMediaStreamSource(stream);
 			source.connect(inputAnalyser);
 
@@ -299,7 +318,7 @@ async function resumeAudioContext() {
  */
 async function connectToWebsocket() {
 	if (!apiKeyInput.value) {
-		logMessage("Please input API Key", "system");
+		logMessage(i18n[currentLanguage].pleaseInputApiKey, "system");
 		return;
 	}
 
@@ -333,20 +352,20 @@ async function connectToWebsocket() {
 		await client.connect(config, apiKeyInput.value);
 		isConnected = true;
 		await resumeAudioContext();
-		connectButton.textContent = "Disconnect";
+		connectButton.textContent = i18n[currentLanguage].disconnect;
 		connectButton.classList.add("connected");
 		messageInput.disabled = false;
 		sendButton.disabled = false;
 		micButton.disabled = false;
 		cameraButton.disabled = false;
 		screenButton.disabled = false;
-		logMessage("Connected to Gemini 2.0 Flash Multimodal Live API", "system");
+		logMessage(i18n[currentLanguage].connectionSuccess, "system");
 	} catch (error) {
 		const errorMessage = error.message || "Unknown error";
 		Logger.error("Connection error:", error);
 		logMessage(`Connection error: ${errorMessage}`, "system");
 		isConnected = false;
-		connectButton.textContent = "Connect";
+		connectButton.textContent = i18n[currentLanguage].connect;
 		connectButton.classList.remove("connected");
 		messageInput.disabled = true;
 		sendButton.disabled = true;
@@ -371,14 +390,14 @@ function disconnectFromWebsocket() {
 		isRecording = false;
 		updateMicIcon();
 	}
-	connectButton.textContent = "Connect";
+	connectButton.textContent = i18n[currentLanguage].connect;
 	connectButton.classList.remove("connected");
 	messageInput.disabled = true;
 	sendButton.disabled = true;
 	micButton.disabled = true;
 	cameraButton.disabled = true;
 	screenButton.disabled = true;
-	logMessage("Disconnected from server", "system");
+	logMessage(i18n[currentLanguage].connectionClosed, "system");
 
 	if (videoManager) {
 		stopVideo();
@@ -396,7 +415,7 @@ function handleSendMessage() {
 	const message = messageInput.value.trim();
 	if (message) {
 		logMessage(message, "user");
-		client.send({text: message});
+		client.send({ text: message });
 		messageInput.value = "";
 	}
 }
@@ -446,6 +465,7 @@ client.on("interrupted", () => {
 	isUsingTool = false;
 	Logger.info("Model interrupted");
 	logMessage("Model interrupted", "system");
+	currentAiMessageElement = null; // 中断时清除当前消息元素引用
 });
 
 client.on("setupcomplete", () => {
@@ -454,7 +474,9 @@ client.on("setupcomplete", () => {
 
 client.on("turncomplete", () => {
 	isUsingTool = false;
+	Logger.info("Turn complete");
 	logMessage("Turn complete", "system");
+	currentAiMessageElement = null; // 对话轮次结束时清除当前消息元素引用
 });
 
 client.on("error", (error) => {
