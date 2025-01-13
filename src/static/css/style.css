@@ -66,7 +66,7 @@ body {
 	padding: var(--spacing-md) var(--spacing-lg);
 	border-radius: var(--radius-lg);
 	box-shadow: var(--shadow-md);
-	position: sticky;
+	position: relative;
 	top: var(--spacing-md);
 	z-index: 100;
 	backdrop-filter: blur(8px);
