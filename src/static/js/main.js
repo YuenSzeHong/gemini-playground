@@ -1,10 +1,11 @@
-import { MultimodalLiveClient } from "./core/websocket-client.js";
-import { AudioStreamer } from "./audio/audio-streamer.js";
-import { AudioRecorder } from "./audio/audio-recorder.js";
-import { CONFIG } from "./config/config.js";
-import { Logger } from "./utils/logger.js";
-import { VideoManager } from "./video/video-manager.js";
-import { ScreenRecorder } from "./video/screen-recorder.js";
+import {MultimodalLiveClient} from "./core/websocket-client.js";
+import {AudioStreamer} from "./audio/audio-streamer.js";
+import {AudioRecorder} from "./audio/audio-recorder.js";
+import {CONFIG} from "./config/config.js";
+import {Logger} from "./utils/logger.js";
+import {VideoManager} from "./video/video-manager.js";
+import {ScreenRecorder} from "./video/screen-recorder.js";
+import {i18n} from "./i18n.js";
 
 /**
  * @fileoverview Main entry point for the application.
@@ -42,6 +43,7 @@ const savedApiKey = localStorage.getItem("gemini_api_key");
 const savedVoice = localStorage.getItem("gemini_voice");
 const savedFPS = localStorage.getItem("video_fps");
 const savedSystemInstruction = localStorage.getItem("system_instruction");
+const savedResponseType = localStorage.getItem("response_type") || "text";
 
 if (savedApiKey) {
 	apiKeyInput.value = savedApiKey;
@@ -49,13 +51,15 @@ if (savedApiKey) {
 if (savedVoice) {
 	voiceSelect.value = savedVoice;
 }
-
 if (savedFPS) {
 	fpsInput.value = savedFPS;
 }
 if (savedSystemInstruction) {
 	systemInstructionInput.value = savedSystemInstruction;
 	CONFIG.SYSTEM_INSTRUCTION.TEXT = savedSystemInstruction;
+}
+if (savedResponseType) {
+	responseTypeSelect.value = savedResponseType;
 }
 
 // Handle configuration panel toggle
@@ -65,6 +69,7 @@ configToggle.addEventListener("click", () => {
 });
 
 applyConfigButton.addEventListener("click", () => {
+	localStorage.setItem("response_type", responseTypeSelect.value);
 	configContainer.classList.toggle("active");
 	configToggle.classList.toggle("active");
 });
@@ -83,6 +88,46 @@ let isUsingTool = false;
 
 // Multimodal Client
 const client = new MultimodalLiveClient();
+
+let currentLanguage = localStorage.getItem("language") || "zh";
+
+function updateLanguage(lang) {
+	currentLanguage = lang;
+	localStorage.setItem("language", lang);
+
+	// Update all text content
+	document.querySelectorAll("[data-i18n]").forEach((element) => {
+		const key = element.getAttribute("data-i18n");
+		if (i18n[lang][key]) {
+			element.textContent = i18n[lang][key];
+		}
+	});
+
+	// Update all placeholders
+	document.querySelectorAll("[data-i18n-placeholder]").forEach((element) => {
+		const key = element.getAttribute("data-i18n-placeholder");
+		if (i18n[lang][key]) {
+			element.placeholder = i18n[lang][key];
+		}
+	});
+
+	// Update document title
+	document.title = i18n[lang].title;
+}
+
+// Initialize language
+document.addEventListener("DOMContentLoaded", () => {
+	const languageSelect = document.getElementById("language-select");
+	languageSelect.value = currentLanguage;
+	updateLanguage(currentLanguage);
+
+	// Add language change listener
+	languageSelect.addEventListener("change", (e) => {
+		updateLanguage(e.target.value);
+	});
+
+	// ... rest of your existing initialization code ...
+});
 
 /**
  * Logs a message to the UI.
@@ -116,6 +161,7 @@ function logMessage(message, type = "system") {
 	const messageText = document.createElement("span");
 	messageText.textContent = message;
 	logEntry.appendChild(messageText);
+
 	if (type !== "system") {
 		logsContainer.appendChild(logEntry);
 		logsContainer.scrollTop = logsContainer.scrollHeight;
@@ -211,7 +257,7 @@ async function handleMicToggle() {
 				updateAudioVisualizer(inputVolume, true);
 			});
 
-			const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+			const stream = await navigator.mediaDevices.getUserMedia({audio: true});
 			const source = audioCtx.createMediaStreamSource(stream);
 			source.connect(inputAnalyser);
 
@@ -350,7 +396,7 @@ function handleSendMessage() {
 	const message = messageInput.value.trim();
 	if (message) {
 		logMessage(message, "user");
-		client.send({ text: message });
+		client.send({text: message});
 		messageInput.value = "";
 	}
 }
