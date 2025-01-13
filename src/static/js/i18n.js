@@ -21,7 +21,8 @@ const i18n = {
         audio: 'Audio',
         connectionSuccess: 'Connected to Gemini 2.0 Flash Multimodal Live API',
         connectionClosed: 'Disconnected from server',
-        pleaseInputApiKey: 'Please input API Key'
+        pleaseInputApiKey: 'Please input API Key',
+        clickToConnect: 'Click the Connect button to start'
     },
     zh: {
         title: 'Gemini 2.0 多模态实时 API 客户端',
@@ -45,7 +46,8 @@ const i18n = {
         audio: '音频',
         connectionSuccess: '已连接到 Gemini 2.0 Flash 多模态实时 API',
         connectionClosed: '已断开服务器连接',
-        pleaseInputApiKey: '请输入 API 密钥'
+        pleaseInputApiKey: '请输入 API 密钥',
+        clickToConnect: '点击连接按钮开始对话'
     }
 };
 

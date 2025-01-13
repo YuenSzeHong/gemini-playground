@@ -148,12 +148,25 @@ document.addEventListener("DOMContentLoaded", () => {
 	}
 });
 
+// Initialize logs container with connection reminder
+logsContainer.innerHTML = `<div class="log-entry system">
+	<span class="emoji">💡</span>
+	<span class="message-text">${savedApiKey ? i18n[currentLanguage].clickToConnect : i18n[currentLanguage].pleaseInputApiKey}</span>
+</div>`;
+
 /**
  * Logs a message to the UI.
  * @param {string} message - The message to log.
  * @param {string} [type='system'] - The type of the message (system, user, ai).
  */
 function logMessage(message, type = "system") {
+	// 只显示用户消息、AI消息和连接成功/失败的系统消息
+	if (type === "system" && 
+		message !== i18n[currentLanguage].connectionSuccess && 
+		message !== i18n[currentLanguage].connectionClosed) {
+		return;
+	}
+
 	if (type === "user") {
 		// 用户发送新消息时，清除当前AI消息元素的引用
 		currentAiMessageElement = null;
@@ -167,19 +180,19 @@ function logMessage(message, type = "system") {
 		return;
 	}
 
+	// 如果是连接成功消息，清空之前的提示
+	if (type === "system" && message === i18n[currentLanguage].connectionSuccess) {
+		logsContainer.innerHTML = '';
+	}
+
 	const logEntry = document.createElement("div");
 	logEntry.classList.add("log-entry", type);
-
-	const timestamp = document.createElement("span");
-	timestamp.classList.add("timestamp");
-	timestamp.textContent = new Date().toLocaleTimeString();
-	logEntry.appendChild(timestamp);
 
 	const emoji = document.createElement("span");
 	emoji.classList.add("emoji");
 	switch (type) {
 		case "system":
-			emoji.textContent = "⚙️";
+			emoji.textContent = "✅";
 			break;
 		case "user":
 			emoji.textContent = "🫵";
@@ -195,13 +208,21 @@ function logMessage(message, type = "system") {
 	messageText.textContent = message;
 	logEntry.appendChild(messageText);
 
-	if (type !== "system") {
-		logsContainer.appendChild(logEntry);
-		logsContainer.scrollTop = logsContainer.scrollHeight;
+	logsContainer.appendChild(logEntry);
+	logsContainer.scrollTop = logsContainer.scrollHeight;
 
-		if (type === "ai") {
-			currentAiMessageElement = logEntry;
-		}
+	if (type === "ai") {
+		currentAiMessageElement = logEntry;
+	}
+
+	// 如果是断开连接消息，显示连接提示
+	if (type === "system" && message === i18n[currentLanguage].connectionClosed) {
+		setTimeout(() => {
+			logsContainer.innerHTML = `<div class="log-entry system">
+				<span class="emoji">💡</span>
+				<span class="message-text">${apiKeyInput.value ? i18n[currentLanguage].clickToConnect : i18n[currentLanguage].pleaseInputApiKey}</span>
+			</div>`;
+		}, 2000);
 	}
 }
 
