@@ -121,6 +121,9 @@ async function handleEmbeddings(req, apiKey) {
       "requests": req.input.map(text => ({
         model,
         content: { parts: { text } },
+		  tools: [{
+		    "googleSearch": {}
+		  }],
         outputDimensionality: req.dimensions,
       }))
     })
@@ -199,7 +202,7 @@ const harmCategory = [
 
 const safetySettings = (modelName) => {
   let threshold = modelName?.includes('2.0') && modelName === 'gemini-2.0-flash-exp' ? 'OFF' : 'BLOCK_NONE';
-  
+
   return harmCategory.map(category => ({
     category,
     threshold: category === "HARM_CATEGORY_CIVIC_INTEGRITY" ? "BLOCK_ONLY_HIGH" : threshold
