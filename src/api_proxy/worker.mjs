@@ -122,7 +122,7 @@ async function handleEmbeddings(req, apiKey) {
         model,
         content: { parts: { text } },
 		  tools: [{
-		    "googleSearch": {}
+		    "google_search": {}
 		  }],
         outputDimensionality: req.dimensions,
       }))
@@ -342,7 +342,7 @@ const transformRequest = async (req) => ({
   safetySettings: safetySettings(req.model),
   generationConfig: transformConfig(req),
   tools: [{
-    "googleSearch": {}
+    "google_search": {}
   }],
 });
 
