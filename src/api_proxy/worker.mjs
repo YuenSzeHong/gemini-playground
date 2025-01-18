@@ -339,7 +339,7 @@ const transformRequest = async (req) => ({
   safetySettings: safetySettings(req.model),
   generationConfig: transformConfig(req),
   tools: [{
-    "google_search": {}
+    "googleSearch": {}
   }],
 });
 
