@@ -121,9 +121,9 @@ async function handleEmbeddings(req, apiKey) {
       "requests": req.input.map(text => ({
         model,
         content: { parts: { text } },
-		  tools: [{
-		    "google_search": {}
-		  }],
+        tools: [{
+            "google_search": {}
+        }],
         outputDimensionality: req.dimensions,
       }))
     })
