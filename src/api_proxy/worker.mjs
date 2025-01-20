@@ -150,12 +150,9 @@ async function handleCompletions(req, apiKey) {
     case req.model.startsWith("models/"):
       model = req.model.substring(7);
       break;
-    case req.model.startsWith("gemini-") || req.model.startsWith("learnlm-"):
+    case req.model.startsWith("gemini-"):
+    case req.model.startsWith("learnlm-"):
       model = req.model;
-  }
-  if (req.model == "gemini-2.0-flash-exp-search") {
-    model = "gemini-2.0-flash-exp";
-    req.tools = [{"google_search": {}}];
   }
   const TASK = req.stream ? "streamGenerateContent" : "generateContent";
   let url = `${BASE_URL}/${API_VERSION}/models/${model}:${TASK}`;
