@@ -205,7 +205,8 @@ const safetySettings = (modelName) => {
   
   return harmCategory.map(category => ({
     category,
-    threshold: category === "HARM_CATEGORY_CIVIC_INTEGRITY" ? "BLOCK_ONLY_HIGH" : threshold
+    // threshold: category === "HARM_CATEGORY_CIVIC_INTEGRITY" ? "BLOCK_ONLY_HIGH" : threshold
+    threshold: category === "HARM_CATEGORY_CIVIC_INTEGRITY" ? "BLOCK_NONE" : threshold
   }));
 }
 
