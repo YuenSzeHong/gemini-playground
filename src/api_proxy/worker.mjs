@@ -158,7 +158,6 @@ async function handleCompletions(req, apiKey) {
       model = "gemini-2.0-flash-exp",
       req.tools = [{"google_search":{}}]
   }
-  }
   const TASK = req.stream ? "streamGenerateContent" : "generateContent";
   let url = `${BASE_URL}/${API_VERSION}/models/${model}:${TASK}`;
   if (req.stream) { url += "?alt=sse"; }
