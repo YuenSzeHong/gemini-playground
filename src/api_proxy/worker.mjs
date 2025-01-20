@@ -154,10 +154,6 @@ async function handleCompletions(req, apiKey) {
     case req.model.startsWith("learnlm-"):
       model = req.model;
   }
-  if (req.model = "gemini-2.0-flash-exp-search") {
-      model = "gemini-2.0-flash-exp",
-      req.tools = [{"google_search":{}}]
-  }
   const TASK = req.stream ? "streamGenerateContent" : "generateContent";
   let url = `${BASE_URL}/${API_VERSION}/models/${model}:${TASK}`;
   if (req.stream) { url += "?alt=sse"; }
@@ -203,6 +199,7 @@ const harmCategory = [
 
 const safetySettings = (modelName) => {
   let threshold = modelName?.includes('2.0') && modelName === 'gemini-2.0-flash-exp' ? 'OFF' : 'BLOCK_NONE';
+  
   return harmCategory.map(category => ({
     category,
     threshold: category === "HARM_CATEGORY_CIVIC_INTEGRITY" ? "BLOCK_ONLY_HIGH" : threshold
