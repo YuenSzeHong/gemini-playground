@@ -202,11 +202,11 @@ const harmCategory = [
 
 const safetySettings = (modelName) => {
   let threshold = modelName?.includes('2.0') && modelName === 'gemini-2.0-flash-exp' ? 'OFF' : 'BLOCK_NONE';
-  
+
   return harmCategory.map(category => ({
     category,
-    // threshold: category === "HARM_CATEGORY_CIVIC_INTEGRITY" ? "BLOCK_ONLY_HIGH" : threshold
-    threshold: category === "HARM_CATEGORY_CIVIC_INTEGRITY" ? "BLOCK_NONE" : threshold
+    threshold: category === "HARM_CATEGORY_CIVIC_INTEGRITY" ? "BLOCK_ONLY_HIGH" : threshold
+    // threshold: category === "HARM_CATEGORY_CIVIC_INTEGRITY" ? "BLOCK_NONE" : threshold
   }));
 }
 
