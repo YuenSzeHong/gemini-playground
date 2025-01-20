@@ -340,7 +340,7 @@ const transformRequest = async (req) => ({
   tools: req.tools,
   if (model = "gemini-2.0-flash-exp-search") {
     model = "gemini-2.0-flash-exp",
-    tools: [{"google_search":{}}]
+    tools = [{"google_search":{}}]
   }
 });
 
