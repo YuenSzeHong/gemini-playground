@@ -199,7 +199,7 @@ const harmCategory = [
 
 const safetySettings = (modelName) => {
   let threshold = modelName?.includes('2.0') && modelName === 'gemini-2.0-flash-exp' ? 'OFF' : 'BLOCK_NONE';
-  
+
   return harmCategory.map(category => ({
     category,
     threshold: category === "HARM_CATEGORY_CIVIC_INTEGRITY" ? "BLOCK_ONLY_HIGH" : threshold
@@ -338,7 +338,7 @@ const transformRequest = async (req) => ({
   ...await transformMessages(req.messages),
   safetySettings: safetySettings(req.model),
   generationConfig: transformConfig(req),
-  tools: [{"google_search": {}}]
+  tools: req.tools
 });
 
 const generateChatcmplId = () => {
