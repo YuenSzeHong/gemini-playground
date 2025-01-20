@@ -338,7 +338,7 @@ const transformRequest = async (req) => ({
   safetySettings: safetySettings(req.model),
   generationConfig: transformConfig(req),
   tools: req.tools,
-  if (req.model === "gemini-2.0-flash-exp-search") {
+  if (model == "gemini-2.0-flash-exp-search") {
     model = "gemini-2.0-flash-exp",
     tools: [{"google_search":{}}]
   }
