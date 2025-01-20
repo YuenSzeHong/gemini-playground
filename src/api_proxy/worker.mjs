@@ -338,6 +338,10 @@ const transformRequest = async (req) => ({
   safetySettings: safetySettings(req.model),
   generationConfig: transformConfig(req),
   tools: req.tools,
+  if (req.model === "gemini-2.0-flash-exp-search") {
+    model = "gemini-2.0-flash-exp",
+    req.tools: [{"google_search":{}}]
+  }
 });
 
 const generateChatcmplId = () => {
