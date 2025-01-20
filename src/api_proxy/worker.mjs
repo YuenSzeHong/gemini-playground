@@ -153,6 +153,11 @@ async function handleCompletions(req, apiKey) {
     case req.model.startsWith("gemini-"):
     case req.model.startsWith("learnlm-"):
       model = req.model;
+    if (model = "gemini-2.0-flash-exp-search") {
+          model = "gemini-2.0-flash-exp",
+              tools = [{"google_search":{}}]
+                }
+    }
   }
   const TASK = req.stream ? "streamGenerateContent" : "generateContent";
   let url = `${BASE_URL}/${API_VERSION}/models/${model}:${TASK}`;
@@ -338,10 +343,6 @@ const transformRequest = async (req) => ({
   safetySettings: safetySettings(req.model),
   generationConfig: transformConfig(req),
   tools: req.tools,
-  if (model = "gemini-2.0-flash-exp-search") {
-    model = "gemini-2.0-flash-exp",
-    tools = [{"google_search":{}}]
-  }
 });
 
 const generateChatcmplId = () => {
